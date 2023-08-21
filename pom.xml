@@ -23,6 +23,7 @@
 		<spring-boot-starter-data-jpa.version>3.1.2</spring-boot-starter-data-jpa.version>
 		<project-lombok.version>1.18.24</project-lombok.version>
 		<mysql-connector-j.version>8.0.33</mysql-connector-j.version>
+		<jakarta.validation-api.version>2.0.2</jakarta.validation-api.version>
 	</properties>
 
 	<dependencyManagement>
@@ -64,6 +65,12 @@
 				<artifactId>mysql-connector-j</artifactId>
 				<scope>runtime</scope>
 				<version>${mysql-connector-j.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>jakarta.validation</groupId>
+				<artifactId>jakarta.validation-api</artifactId>
+				<version>${jakarta.validation-api.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
