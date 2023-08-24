@@ -24,4 +24,33 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return handleExceptionInternal(ex, bodyOfResponse,
                 new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
+
+    @ExceptionHandler(value = { QuestionNotAddedException.class })
+    protected ResponseEntity<Object> handleQuestionNotAdded(RuntimeException ex, WebRequest request) {
+        String bodyOfResponse = "Question could not be added.";
+        return handleExceptionInternal(ex, bodyOfResponse,
+                new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE, request);
+    }
+
+    @ExceptionHandler(value = { QuestionUpdateException.class })
+    protected ResponseEntity<Object> handleQuestionUpdateException(RuntimeException ex, WebRequest request) {
+        String bodyOfResponse = "Question could not be updated.";
+        return handleExceptionInternal(ex, bodyOfResponse,
+                new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE, request);
+    }
+
+    @ExceptionHandler(value = { QuestionDeleteException.class })
+    protected ResponseEntity<Object> handleQuestionDeleteException(RuntimeException ex, WebRequest request) {
+        String bodyOfResponse = "Question could not be deleted.";
+        return handleExceptionInternal(ex, bodyOfResponse,
+                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = { QuizQuestionsRetrieveException.class })
+    protected ResponseEntity<Object> handleQuizQuestionsRetrieveException(RuntimeException ex, WebRequest request) {
+        String bodyOfResponse = "Error retrieving questions for quiz.";
+        return handleExceptionInternal(ex, bodyOfResponse,
+                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
 }
+

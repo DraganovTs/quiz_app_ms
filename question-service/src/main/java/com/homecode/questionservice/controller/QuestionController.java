@@ -1,12 +1,12 @@
 package com.homecode.questionservice.controller;
 
+import com.homecode.questionservice.model.Response;
+import com.homecode.questionservice.model.dto.QuestionAddDTO;
 import com.homecode.questionservice.model.view.QuestionView;
 import com.homecode.questionservice.service.QuestionService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,6 +34,39 @@ public class QuestionController {
     @GetMapping("/category/{category}")
     public ResponseEntity<List<QuestionView>> getQuestionsByCategory(@PathVariable("category") String category){
         return  questionService.getQuestionByCategory(category);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<String> addQuestion(@Valid @RequestBody QuestionAddDTO questionAddDTO){
+        return  questionService.addQuestion(questionAddDTO);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateQuestionByID(@PathVariable("id") Long id
+            ,@Valid @RequestBody QuestionAddDTO questionAddDTO){
+        return questionService.updateQuestionByID(id,questionAddDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteQuestion(@PathVariable("id") Long id){
+        return questionService.deleteQuestion(id);
+    }
+
+    @GetMapping("generate")
+    public ResponseEntity<List<Long>> getQuestionsForQuiz(
+            @RequestParam String categoryName,
+            @RequestParam Integer numQuestions){
+        return questionService.getQuestionsForQuiz(categoryName,numQuestions);
+    }
+
+    @PostMapping("getQuestions")
+    public ResponseEntity<List<QuestionView>> getQuestionsFromId(@RequestBody List<Long> questionsId){
+        return questionService.getQuestionsById(questionsId);
+    }
+
+    @PostMapping("getScore")
+    public ResponseEntity<Integer> getScore(@RequestBody List<Response> responses){
+        return questionService.getScore(responses);
     }
 
 
