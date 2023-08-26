@@ -1,8 +1,8 @@
 package com.homecode.quizservice.service;
 
+import com.homecode.quizservice.feign.QuizInterface;
 import com.homecode.quizservice.model.Quiz;
 import com.homecode.quizservice.model.Response;
-import com.homecode.quizservice.model.view.QuestionView;
 import com.homecode.quizservice.repository.QuizRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,26 +15,24 @@ import java.util.Optional;
 public class QuizService {
 
     private final QuizRepository quizRepository;
+    private final QuizInterface quizInterface;
 
-    public QuizService(QuizRepository quizRepository) {
+    public QuizService(QuizRepository quizRepository, QuizInterface quizInterface) {
         this.quizRepository = quizRepository;
+        this.quizInterface = quizInterface;
     }
 
     public ResponseEntity<String> createQuiz(String category, int numQ, String title) {
 
-//        List<Long> questions = questionService.findRandomQuestionsByCategory(category, numQ);
-//
-//        Quiz quiz = Quiz.builder()
-//                .title(title)
-//                .questions(questions)
-//                .build();
-//
-//        this.quizRepository.save(quiz);
-
+        List<Long> questions = quizInterface.getQuestionsForQuiz(category,numQ).getBody();
+        Quiz quiz = new Quiz();
+        quiz.setTitle(title);
+        quiz.setQuestionsId(questions);
+        quizRepository.save(quiz);
         return new ResponseEntity<>("Success", HttpStatus.CREATED);
     }
 
-    public ResponseEntity<List<QuestionView>> getQuizQuestions(Integer id) {
+    public ResponseEntity<List<Long>> getQuizQuestions(Integer id) {
 
 //        List<Question> questionsFromDB = getQuestions(id);
 //        List<QuestionToClientDTO> questionsDTOList = questionsFromDB
@@ -42,7 +40,7 @@ public class QuizService {
 //                .map(this::mapQuestionToDTO)
 //                .toList();
 
-        return new ResponseEntity<>(questionsDTOList, HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
 
@@ -51,23 +49,23 @@ public class QuizService {
 //        Integer correctAnswers = checkClientResult(questionsFromDB, responseList);
 //
 
-        return new ResponseEntity<>(correctAnswers,HttpStatus.OK);
+        return new ResponseEntity<>(null,HttpStatus.OK);
     }
 
-    private Integer checkClientResult(List<Question> questionsFromDB, List<Response> responseList) {
-        Integer correctAnswer = 0;
-        for (int i = 0; i < questionsFromDB.size(); i++) {
-            if (questionsFromDB.get(i).getRightAnswer().equals(responseList.get(i).getAnswer())) {
-                correctAnswer++;
-            }
-        }
+    private Integer checkClientResult(List<Long> questionsFromDB, List<Response> responseList) {
+//        Integer correctAnswer = 0;
+//        for (int i = 0; i < questionsFromDB.size(); i++) {
+//            if (questionsFromDB.get(i).getRightAnswer().equals(responseList.get(i).getAnswer())) {
+//                correctAnswer++;
+//            }
+//        }
 
-        return correctAnswer;
+        return null;
     }
 
-    private List<Question> getQuestions(Integer id) {
+    private List<Long> getQuestions(Long id) {
         Optional<Quiz> quiz = quizRepository.findById(id);
-        return quiz.get().getQuestions();
+        return null;
     }
 
 

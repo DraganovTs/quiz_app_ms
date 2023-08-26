@@ -21,6 +21,6 @@ public class Quiz {
     private Long id;
     @Column(nullable = false,unique = true)
     private String title;
-    @ManyToMany
-    private List<QuestionView> questions;
+    @ElementCollection
+    private List<Long> questionsId;
 }

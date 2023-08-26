@@ -110,7 +110,7 @@ public class QuestionService {
             throw new QuestionDeleteException("Question could not be deleted: " + e.getMessage());
         }
     }
-
+// Quiz-service
     public ResponseEntity<List<Long>> getQuestionsForQuiz(String categoryName, Integer numQuestions) {
         try {
             List<Long> questions = questionRepository.findRandomQuestionsByCategory(categoryName, numQuestions);

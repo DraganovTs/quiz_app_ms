@@ -51,7 +51,7 @@ public class QuestionController {
     public ResponseEntity<String> deleteQuestion(@PathVariable("id") Long id){
         return questionService.deleteQuestion(id);
     }
-
+//Quiz-service
     @GetMapping("generate")
     public ResponseEntity<List<Long>> getQuestionsForQuiz(
             @RequestParam String categoryName,
