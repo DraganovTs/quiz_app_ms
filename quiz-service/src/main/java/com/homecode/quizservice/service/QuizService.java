@@ -3,13 +3,14 @@ package com.homecode.quizservice.service;
 import com.homecode.quizservice.feign.QuizInterface;
 import com.homecode.quizservice.model.Quiz;
 import com.homecode.quizservice.model.Response;
+import com.homecode.quizservice.model.view.QuestionView;
 import com.homecode.quizservice.repository.QuizRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class QuizService {
@@ -32,40 +33,19 @@ public class QuizService {
         return new ResponseEntity<>("Success", HttpStatus.CREATED);
     }
 
-    public ResponseEntity<List<Long>> getQuizQuestions(Integer id) {
+    @Transactional
+    public ResponseEntity<List<QuestionView>> getQuizQuestions(Long id) {
 
-//        List<Question> questionsFromDB = getQuestions(id);
-//        List<QuestionToClientDTO> questionsDTOList = questionsFromDB
-//                .stream()
-//                .map(this::mapQuestionToDTO)
-//                .toList();
-
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        Quiz quiz = quizRepository.findById(id).get();
+        List<Long> questionsId = quiz.getQuestionsId();
+        ResponseEntity<List<QuestionView>> questions = quizInterface.getQuestionsFromId(questionsId);
+        return questions;
     }
 
 
-    public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responseList) {
-//        List<Question> questionsFromDB = getQuestions(id);
-//        Integer correctAnswers = checkClientResult(questionsFromDB, responseList);
-//
-
-        return new ResponseEntity<>(null,HttpStatus.OK);
-    }
-
-    private Integer checkClientResult(List<Long> questionsFromDB, List<Response> responseList) {
-//        Integer correctAnswer = 0;
-//        for (int i = 0; i < questionsFromDB.size(); i++) {
-//            if (questionsFromDB.get(i).getRightAnswer().equals(responseList.get(i).getAnswer())) {
-//                correctAnswer++;
-//            }
-//        }
-
-        return null;
-    }
-
-    private List<Long> getQuestions(Long id) {
-        Optional<Quiz> quiz = quizRepository.findById(id);
-        return null;
+    public ResponseEntity<Integer> calculateResult(Long id, List<Response> responses) {
+        ResponseEntity<Integer> score = quizInterface.getScore(responses);
+        return score;
     }
 
 

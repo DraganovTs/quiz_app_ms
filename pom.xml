@@ -25,6 +25,7 @@
 		<mysql-connector-j.version>8.0.33</mysql-connector-j.version>
 		<jakarta.validation-api.version>2.0.2</jakarta.validation-api.version>
 		<spring-cloud.version>2022.0.4</spring-cloud.version>
+        <spring-cloud-starter-openfeign.version>4.0.0</spring-cloud-starter-openfeign.version>
 	</properties>
 
 	<dependencyManagement>
@@ -83,6 +84,16 @@
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 				<version>${spring-cloud.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-openfeign</artifactId>
+				<version>${spring-cloud-starter-openfeign.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-starter-loadbalancer</artifactId>
+				<version>${spring-cloud-starter-openfeign.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

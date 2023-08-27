@@ -27,12 +27,12 @@ public class QuizController {
     }
 
     @GetMapping("get/{id}")
-    public ResponseEntity<List<Long>> getQuizQuestions(@PathVariable Integer id){
+    public ResponseEntity<List<QuestionView>> getQuizQuestions(@PathVariable Long id){
         return quizService.getQuizQuestions(id);
     }
 
     @PostMapping("submit/{id}")
-    public ResponseEntity<Integer> submitQuiz(@PathVariable Integer id,
+    public ResponseEntity<Integer> submitQuiz(@PathVariable Long id,
                                               @RequestBody List<Response> responseList){
         return quizService.calculateResult(id,responseList);
 
