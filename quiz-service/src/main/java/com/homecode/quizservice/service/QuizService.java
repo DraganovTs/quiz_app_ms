@@ -1,5 +1,8 @@
 package com.homecode.quizservice.service;
 
+import com.homecode.quizservice.exception.QuizCreationException;
+import com.homecode.quizservice.exception.QuizQuestionsRetrievalException;
+import com.homecode.quizservice.exception.ResultCalculationException;
 import com.homecode.quizservice.feign.QuizInterface;
 import com.homecode.quizservice.model.Quiz;
 import com.homecode.quizservice.model.Response;
@@ -24,29 +27,42 @@ public class QuizService {
     }
 
     public ResponseEntity<String> createQuiz(String category, int numQ, String title) {
-
-        List<Long> questions = quizInterface.getQuestionsForQuiz(category,numQ).getBody();
-        Quiz quiz = new Quiz();
-        quiz.setTitle(title);
-        quiz.setQuestionsId(questions);
-        quizRepository.save(quiz);
-        return new ResponseEntity<>("Success", HttpStatus.CREATED);
+        try {
+            List<Long> questions = quizInterface.getQuestionsForQuiz(category, numQ).getBody();
+            Quiz quiz = new Quiz();
+            quiz.setTitle(title);
+            quiz.setQuestionsId(questions);
+            quizRepository.save(quiz);
+            return new ResponseEntity<>("Success", HttpStatus.CREATED);
+        } catch (Exception e) {
+            throw new QuizCreationException("Error creating quiz: " + e.getMessage());
+        }
     }
+
 
     @Transactional
     public ResponseEntity<List<QuestionView>> getQuizQuestions(Long id) {
-
-        Quiz quiz = quizRepository.findById(id).get();
-        List<Long> questionsId = quiz.getQuestionsId();
-        ResponseEntity<List<QuestionView>> questions = quizInterface.getQuestionsFromId(questionsId);
-        return questions;
+        try {
+            Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new QuizQuestionsRetrievalException("Quiz not found"));
+            List<Long> questionsId = quiz.getQuestionsId();
+            ResponseEntity<List<QuestionView>> questions = quizInterface.getQuestionsFromId(questionsId);
+            return questions;
+        } catch (Exception e) {
+            throw new QuizQuestionsRetrievalException("Error retrieving quiz questions: " + e.getMessage());
+        }
     }
+
 
 
     public ResponseEntity<Integer> calculateResult(Long id, List<Response> responses) {
-        ResponseEntity<Integer> score = quizInterface.getScore(responses);
-        return score;
+        try {
+            ResponseEntity<Integer> score = quizInterface.getScore(responses);
+            return score;
+        } catch (Exception e) {
+            throw new ResultCalculationException("Error calculating result: " + e.getMessage());
+        }
     }
+
 
 
 }

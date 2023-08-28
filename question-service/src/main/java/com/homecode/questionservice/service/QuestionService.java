@@ -6,6 +6,7 @@ import com.homecode.questionservice.model.Response;
 import com.homecode.questionservice.model.dto.QuestionAddDTO;
 import com.homecode.questionservice.model.view.QuestionView;
 import com.homecode.questionservice.repository.QuestionRepository;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,11 @@ import java.util.stream.Collectors;
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final Environment environment;
 
-    public QuestionService(QuestionRepository questionRepository) {
+    public QuestionService(QuestionRepository questionRepository, Environment environment) {
         this.questionRepository = questionRepository;
+        this.environment = environment;
     }
 
     //Init methods
