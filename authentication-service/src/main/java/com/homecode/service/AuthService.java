@@ -21,7 +21,7 @@ public class AuthService {
     public AuthResponse register(AuthRequest request) {
         //ToDo validation if user exists in DB
         request.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
-        UserDTO registeredUser = restTemplate.postForObject("http://user-service/users", request, UserDTO.class);
+        UserDTO registeredUser = restTemplate.postForObject("http://localhost:9002/users/register", request, UserDTO.class);
 
         String accessToken = jwtUtil.generate(registeredUser.getId(), registeredUser.getRole(), "ACCESS");
         String refreshToken = jwtUtil.generate(registeredUser.getId(), registeredUser.getRole(), "REFRESH");
