@@ -28,5 +28,5 @@ logging:
       nodeValue: WARN
     blog: WARN
 server:
-  port: 8080
+  port: 8090
 

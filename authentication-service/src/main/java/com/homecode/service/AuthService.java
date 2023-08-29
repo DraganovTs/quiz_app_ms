@@ -3,16 +3,20 @@ package com.homecode.service;
 import com.homecode.model.AuthRequest;
 import com.homecode.model.AuthResponse;
 import com.homecode.model.UserDTO;
-import lombok.AllArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-@AllArgsConstructor
 public class AuthService {
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
+
+    public AuthService(RestTemplate restTemplate, JwtUtil jwtUtil) {
+        this.restTemplate = restTemplate;
+        this.jwtUtil = jwtUtil;
+    }
+
 
     public AuthResponse register(AuthRequest request) {
         //ToDo validation if user exists in DB
