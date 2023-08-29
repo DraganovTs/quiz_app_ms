@@ -5,6 +5,7 @@
     <modules>
         <module>config-service</module>
 		<module>authentication-service</module>
+		<module>user-service</module>
 	</modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
