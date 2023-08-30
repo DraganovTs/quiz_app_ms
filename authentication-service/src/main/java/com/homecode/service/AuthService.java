@@ -19,13 +19,20 @@ public class AuthService {
 
 
     public AuthResponse register(AuthRequest request) {
-        //ToDo validation if user exists in DB
-        request.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
-        UserDTO registeredUser = restTemplate.postForObject("http://localhost:9002/users/register", request, UserDTO.class);
+        try {
+            // ToDo validation if user exists in DB
+            request.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
+            UserDTO registeredUser = restTemplate.postForObject("http://localhost:9002/users/register", request, UserDTO.class);
 
-        String accessToken = jwtUtil.generate(registeredUser.getId(), registeredUser.getRole(), "ACCESS");
-        String refreshToken = jwtUtil.generate(registeredUser.getId(), registeredUser.getRole(), "REFRESH");
+            String accessToken = jwtUtil.generate(registeredUser.getId(), registeredUser.getRole(), "ACCESS");
+            String refreshToken = jwtUtil.generate(registeredUser.getId(), registeredUser.getRole(), "REFRESH");
 
-        return new AuthResponse(accessToken, refreshToken);
+            return new AuthResponse(accessToken, refreshToken);
+        } catch (Exception e) {
+            // Log the exception for debugging purposes
+            e.printStackTrace();
+            // You might want to throw a custom exception or return an error response here
+            return null;
+        }
     }
 }
