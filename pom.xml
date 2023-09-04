@@ -102,7 +102,9 @@
 				<artifactId>spring-cloud-starter-loadbalancer</artifactId>
 				<version>${spring-cloud-starter-openfeign.version}</version>
 			</dependency>
+
 		</dependencies>
+
 	</dependencyManagement>
 
 
