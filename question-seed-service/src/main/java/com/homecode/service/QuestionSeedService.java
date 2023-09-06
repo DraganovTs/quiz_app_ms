@@ -11,7 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class QuestionSeedService {
@@ -30,10 +32,13 @@ public class QuestionSeedService {
             for (String questionText : questionTextList) {
                 QuestionAddDTO questionAddDTO = createQuestionAddDTO(questionText);
 
-                ResponseEntity<String> response = questionSeedInterface.addQuestion(questionAddDTO);
+                if (questionAddDTO != null) {
+                    ResponseEntity<String> response = questionSeedInterface.addQuestion(questionAddDTO);
 
-                if (!response.getStatusCode().is2xxSuccessful()) {
-                    return "Failed to create questions from PDF content.";
+                    if (!response.getStatusCode().is2xxSuccessful()) {
+                        return "Failed to create questions from PDF content.";
+                    }
+
                 }
             }
 
@@ -97,11 +102,26 @@ public class QuestionSeedService {
         questionAddDTO.setDifficultyLevel("easy");
         questionAddDTO.setCategory("java");
 
-        // Options and correct answer handling
-        List<String> options = new ArrayList<>();
-        String correctAnswer = null;
+        // Extract options and correct answer
+        Map<String, String> optionsAndCorrectAnswer = extractOptionsAndCorrectAnswer(questionText);
+        if (optionsAndCorrectAnswer == null || optionsAndCorrectAnswer.isEmpty()) {
+            return null;
+        }
 
+        // Set options and correct answer
+        questionAddDTO.setOption1(optionsAndCorrectAnswer.get("Option1"));
+        questionAddDTO.setOption2(optionsAndCorrectAnswer.get("Option2"));
+        questionAddDTO.setOption3(optionsAndCorrectAnswer.get("Option3"));
+        questionAddDTO.setOption4(optionsAndCorrectAnswer.get("Option4"));
+        questionAddDTO.setRightAnswer(optionsAndCorrectAnswer.get("CorrectAnswer"));
+
+        return questionAddDTO;
+    }
+
+    private Map<String, String> extractOptionsAndCorrectAnswer(String questionText) {
+        Map<String, String> optionsAndCorrectAnswer = new HashMap<>();
         String[] lines = questionText.split("\\r?\\n");
+
         for (String line : lines) {
             line = line.trim();
 
@@ -110,28 +130,28 @@ public class QuestionSeedService {
                 continue;
             }
 
-            // Remove 'a)', 'b)', 'c)', 'd)' prefixes and add the option text
-            String optionText = line.replaceAll("^[a-d]\\)", "").trim();
-            options.add(optionText);
+            // Check if it's an option line (e.g., 'a)', 'b)', 'c)', 'd)')
+            if (line.matches("^[a-d]\\).+")) {
+                String optionKey = line.substring(0, 1); // Extract 'a', 'b', 'c', or 'd'
+                String optionText = line.substring(2).trim(); // Extract the option text
 
-            // Identify the correct answer based on the first option
-            if (line.startsWith("a)")) {
-                correctAnswer = optionText;
+                optionsAndCorrectAnswer.put("Option" + optionKey, optionText);
+
+                // Identify the correct answer based on the first option
+                if (optionKey.equals("a")) {
+                    optionsAndCorrectAnswer.put("CorrectAnswer", optionText);
+                }
             }
         }
 
-        if (options.size() < 4) {
-            // Ensure we have at least 4 options, or else return null
+        // Ensure we have at least 4 options and a correct answer
+        if (optionsAndCorrectAnswer.size() < 5) {
             return null;
         }
 
-        // Set options and correct answer
-        questionAddDTO.setOption1(options.get(0));
-        questionAddDTO.setOption2(options.get(1));
-        questionAddDTO.setOption3(options.get(2));
-        questionAddDTO.setOption4(options.get(3));
-        questionAddDTO.setRightAnswer(correctAnswer);
-
-        return questionAddDTO;
+        return optionsAndCorrectAnswer;
     }
+
 }
+
+
